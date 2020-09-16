@@ -1,0 +1,215 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    @*  *@
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @Styles.Render("~/Content/Site.css")
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <img alt="" height="30px" src="@Url.Content("./Images/home.png")" class="imghome">
+                @Html.ActionLink("Home", "Index", "ProductDetails", new { area = "" }, new { @class = "navbar-brand" })
+
+                @*<li>
+            <a href="@Url.Action("Index", "ProductDetails")" title="Login" class="links">
+                <img alt="List View" height="30px" src="@Url.Content("./Images/home.png")">
+                Home
+            </a>
+        </li>*@
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">All Pies <span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            @{
+                                //  var a = 0;
+                                BethanyPieShop2.Models.DbContextClass _context = new BethanyPieShop2.Models.DbContextClass();
+                                var z = _context.Categories.ToList();
+                                foreach (var cata in z)
+                                {
+                                    <li>@Html.ActionLink(@cata.PieType, "ApplePie", "ProductDetails", new { id = cata.Id }, null)</li>
+                                }
+
+
+                                @*<li>@Html.ActionLink("Cakeese Pies", "Index", "Items")</li>
+                                    <li>@Html.ActionLink("Fruit Pies", "Index2", "Items")</li>
+                                    <li>@Html.ActionLink("Seasonal Pies", "", "")</li>*@
+                                <li class="divider"></li>
+                                <li>@Html.ActionLink("View AllPies", "", "Home")</li>
+                            }
+                        </ul>
+                    </li>
+
+                    @*<li>@Html.ActionLink("Contact", "Contact", "Home")</li>*@
+                    <li>
+                            <a href="@Url.Action("Contact", "Home")" title="Contact" class="links">
+                                <img alt="" height="30px" src="@Url.Content("./Images/whiteph.png")">
+                                Contact
+                            </a>
+                    </li>
+
+                    @if (Session["username"] == null)
+                    {
+                        @*<li>@Html.ActionLink("Register", "Register", "Users")</li>*@
+                        <li>
+                            <a href="@Url.Action("Register", "Users")"  title="Register" class="links">
+                                <img alt="" height="30px" style="border-radius:16px" src="@Url.Content("./Images/R.png")">
+                                Register
+                            </a>
+                        </li>
+
+                        @*<li>@Html.ActionLink("Login", "Index", "Users")</li>*@
+                        <li>
+                            <a href="@Url.Action("Index", "Users")" title="Login" class="links">
+                                <img alt="" height="30px" src="@Url.Content("./Images/loginicon.jpg")" style="border-radius:50px;">
+                                @*<i class="fa fa-user-o" aria-hidden="true" ></i>*@
+                                @*<span class="glyphicon glyphicon-user"></span>*@
+
+                                Login
+                            </a>
+                        </li>
+                    }
+                    @if (Session["cart"] != null)
+                    {
+                        var len = 0;
+                        {
+                            // List<BethanyPieShop2.ViewModel.ProductViewModel>)Session["cart"]
+                            var a = (List<BethanyPieShop2.ViewModel.ProductViewModel>)Session["cart"];
+                            len = a.Count;
+
+                        }
+                        <li style=" color:white; margin-top:14px"><i style="color:black; height:25px; width:20px;" class="fa fa-shopping-cart"></i>@len</li>
+                    }
+                </ul>
+                @if (Session["username"] != null)
+                {
+                    <div style="color : white; float : right">
+                        <ul class="nav navbar-nav">
+                            <li style="margin-top:14px">Welcome @Session["username"] (@Session["UserId"])</li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Account<span class="caret"></span></a>
+                                <ul class="dropdown-menu" role="menu">
+
+                                    @{ int el = (int)Session["UserId"];
+                                        if (el == 7)
+                                        {
+                                            <li>@Html.ActionLink("All Users", "UserIndex", "Admin")</li>
+                                            <li>@Html.ActionLink("All Orders", "OrderIndex", "Admin")</li>
+                                            <li>@Html.ActionLink("Profile", "AccountDetails", "Account")</li>
+
+                                        }
+                                        else
+                                        {
+                                            <li>@Html.ActionLink("Your Orders", "Index", "Account")</li>
+                                            <li>@Html.ActionLink("Profile", "AccountDetails", "Account")</li>
+                                            <li>@Html.ActionLink("Cart Items", "CartItems", "Account")</li>
+                                        }
+
+                                    }
+
+                                    <li class="divider"></li>
+                                </ul>
+                            </li>
+                            @*<li style="margin-top : 15px">@Html.ActionLink("Account", "Index", "Account")</li>*@
+                            @*<li>@Html.ActionLink("LogOut", "Logout", "Users")</li>*@
+                            <li>
+                                <a href="@Url.Action("Logout", "Users")" title="Logout" class="links">
+                                    <img alt="" height="30px" src="@Url.Content("./Images/arlogout.png")">
+
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    }
+            <form class="navbar-form navbar-left" role="search">
+                <div class="form-group" style="margin-top:5px">
+                    <input type="text" class="form-control" placeholder="Search">
+                </div>              
+            </form>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container body-content" style="padding-bottom:100px;">
+        @RenderBody()
+        <hr />
+        <!-- Site footer -->
+
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+@if (Session["username"] == null)
+{
+    <div class="">
+        <footer class="site-footer">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-12 col-md-6">
+                        <h6>About</h6>
+                        <p class="text-justify">BethanyPie.com <i>IS TO BE SIMPLE AND DELICIOUS ITEMS</i> Cake is a form of sweet food made from flour, sugar, and other ingredients, that is usually baked. In their oldest forms, cakes were modifications of bread, but cakes now cover a wide range of preparations that can be simple o </p>
+                    </div>
+
+                    <div class="col-xs-6 col-md-3">
+                        <h6>Categories</h6>
+                        <ul class="footer-links">
+                            <li><a href="http://scanfcode.com/category/c-language/">Butter Cakes</a></li>
+                            <li><a href="http://scanfcode.com/category/front-end-development/">Pound Cakes</a></li>
+                            <li><a href="http://scanfcode.com/category/back-end-development/">Genoise Cakes</a></li>
+                            @*<li><a href="http://scanfcode.com/category/java-programming-language/">Seasonal Pies</a></li>
+                            <li><a href="http://scanfcode.com/category/android/">Winter Pies</a></li>*@
+                        </ul>
+                    </div>
+
+                    <div class="col-xs-6 col-md-3">
+                        <h6>Quick Links</h6>
+                        <ul class="footer-links">
+                            <li><a href="http://scanfcode.com/about/">About Us</a></li>
+                            <li><a href="http://scanfcode.com/contact/">Contact Us</a></li>
+                            <li><a href="http://scanfcode.com/privacy-policy/">Privacy Policy</a></li>
+                            @*<li><a href="http://scanfcode.com/sitemap/">Sitemap</a></li>*@
+                        </ul>
+                    </div>
+                </div>
+                <hr>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-8 col-sm-6 col-xs-12">
+                        <p class="copyright-text">
+                            Copyright &copy; 2017 All Rights Reserved by
+                            <a href="#">BethanyPieShop</a>.
+                        </p>
+                    </div>
+
+                    <div class="col-md-4 col-sm-6 col-xs-12">
+                        <ul class="social-icons">
+                            <li><a class="facebook" href="#"><i class="fa fa-facebook"></i></a></li>
+                            <li><a class="twitter" href="#"><i class="fa fa-twitter"></i></a></li>
+                            <li><a class="dribbble" href="#"><i class="fa fa-dribbble"></i></a></li>
+                            <li><a class="linkedin" href="#"><i class="fa fa-linkedin"></i></a></li>
+                           
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+}
+</html>
